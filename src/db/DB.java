@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Properties;
@@ -34,6 +35,17 @@ public class DB {
 		if (Objects.nonNull(connection)) {
 			try {
 				connection.close();
+			}
+			catch (SQLException e) {
+				throw new DbException(e.getMessage());
+			}
+		}
+	}
+	
+	public static void closeResultSet(ResultSet rs) {
+		if (Objects.nonNull(rs)) {
+			try {
+				rs.close();
 			}
 			catch (SQLException e) {
 				throw new DbException(e.getMessage());

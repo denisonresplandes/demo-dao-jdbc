@@ -15,5 +15,5 @@ public interface SellerDao {
 	
 	Optional<Seller> findById(Integer id);
 	
-	List<Seller> findAll();	
+	List<Seller> findAll();
 }

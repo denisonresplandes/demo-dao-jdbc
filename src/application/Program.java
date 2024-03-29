@@ -1,23 +1,22 @@
 package application;
 
-import java.time.LocalDate;
+import java.util.Optional;
 
 import model.dao.DaoFactory;
 import model.dao.SellerDao;
-import model.entities.Department;
 import model.entities.Seller;
 
 public class Program {
 
 	public static void main(String[] args) {
-		Department dep = new Department(1, "Books");
-		
-		Seller seller = new Seller(21, "Bob", "bob@gmail.com", 
-				LocalDate.now(), 3000.00, dep);
-		
-		System.out.println(seller);
 		
 		SellerDao sellerDao = DaoFactory.createSellerDao();
+		
+		Optional<Seller> optional = sellerDao.findById(3);
+		optional.ifPresentOrElse(System.out::println, () -> System.out.println("null"));
+		
+		System.out.println("\n");
+		
+		sellerDao.findAll().forEach(System.out::println);
 	}
-
 }

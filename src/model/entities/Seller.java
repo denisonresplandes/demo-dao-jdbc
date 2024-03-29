@@ -21,6 +21,7 @@ public class Seller implements Serializable {
 	
 	public Seller(Integer id, String name, String email, LocalDate birthDate, Double baseSalary,
 			Department department) {
+		//TODO validations
 		this.id = id;
 		this.name = name;
 		this.email = email;
@@ -50,7 +51,7 @@ public class Seller implements Serializable {
 	}
 	
 	public void setBaseSalary(Double baseSalary) {
-		// TODO validations
+		// TODO validation
 		this.baseSalary = baseSalary;
 	}
 	
