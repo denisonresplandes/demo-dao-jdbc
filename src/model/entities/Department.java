@@ -44,7 +44,7 @@ public class Department implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("Department->[%s, %s]", 
+		return String.format("Department->[id=%s, name=%s]", 
 				getId(), 
 				getName());
 	}
