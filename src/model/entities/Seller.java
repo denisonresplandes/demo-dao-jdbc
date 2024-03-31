@@ -45,6 +45,11 @@ public class Seller implements Serializable {
 	public String getEmail() {
 		return email;
 	}
+	
+	public void setName(String name) {
+		// TODO validations.
+		this.name = name;
+	}
 
 	public LocalDate getBirthDate() {
 		return birthDate;

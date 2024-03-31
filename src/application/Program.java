@@ -25,10 +25,17 @@ public class Program {
 		sellerDao.findByDepartment(new Department(2, null))
 			.forEach(System.out::println);
 		
-		System.out.println("\n### TEST 4: seller insert ###");
-		Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", LocalDate.now(), 
-				4000.00, new Department(2, null));
-		sellerDao.insert(newSeller);
-		System.out.println("Inserted! New id = " + newSeller.getId());
+//		System.out.println("\n### TEST 4: seller insert ###");
+//		Seller newSeller = new Seller(null, "Greg", "greg@gmail.com", LocalDate.now(), 
+//				4000.00, new Department(2, null));
+//		sellerDao.insert(newSeller);
+//		System.out.println("Inserted! New id = " + newSeller.getId());
+		
+		System.out.println("\n### TEST 5: seller update ###");
+		sellerDao.findById(1).ifPresentOrElse(s -> {
+			s.setName("Martha Waine");
+			sellerDao.update(s);
+			System.out.println(s);
+		}, () -> System.out.println("There is no seller with an informed id"));
 	}
 }
