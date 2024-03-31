@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import db.DB;
 import db.DbException;
 import model.dao.SellerDao;
 import model.entities.Department;
@@ -42,12 +41,12 @@ public class SellerDaoJDBC implements SellerDao {
 			int rowsAffected = statement.executeUpdate();
 			
 			if (rowsAffected > 0) {
-				ResultSet rs = statement.getGeneratedKeys();
-				if (rs.next()) {
-					int id = rs.getInt(1);
-					seller.setId(id);
+				try (ResultSet rs = statement.getGeneratedKeys()) {
+					if (rs.next()) {
+						int id = rs.getInt(1);
+						seller.setId(id);
+					}
 				}
-				DB.closeResultSet(rs);
 			}
 			else {
 				throw new DbException("Unexpected error! No rows affected!");
@@ -98,23 +97,19 @@ public class SellerDaoJDBC implements SellerDao {
 				+ "FROM seller INNER JOIN department "
 				+ "ON seller.departmentId = department.id "
 				+ "WHERE seller.id=?";
-		ResultSet rs = null;
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setInt(1, id);
 			
-			rs = statement.executeQuery();
-			
-			if (rs.next()) {
-				Department department = mapDepartment(rs);
-				Seller seller = mapSeller(rs, department);
-				return Optional.of(seller);
+			try (ResultSet rs = statement.executeQuery()) {
+				if (rs.next()) {
+					Department department = mapDepartment(rs);
+					Seller seller = mapSeller(rs, department);
+					return Optional.of(seller);
+				}
 			}
 		} 
 		catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}
-		finally {
-			DB.closeResultSet(rs);
 		}
 		return Optional.empty();
 	}
@@ -125,29 +120,25 @@ public class SellerDaoJDBC implements SellerDao {
 				+ "INNER JOIN department ON seller.departmentId = department.id "
 				+ "WHERE departmentId = ? ORDER BY name";
 		
-		ResultSet rs = null;
 		List<Seller> sellers = new ArrayList<>();
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			statement.setInt(1, department.getId());
 			
-			rs = statement.executeQuery();
-
-			Map<Integer, Department> map = new HashMap<>();
-			while (rs.next()) {
-				Department dep = map.get(rs.getInt("departmentId"));
-				if (Objects.isNull(dep)) {
-					dep = mapDepartment(rs);
-					map.put(rs.getInt("departmentId"), dep);
+			try (ResultSet rs = statement.executeQuery()) {
+				Map<Integer, Department> map = new HashMap<>();
+				while (rs.next()) {
+					Department dep = map.get(rs.getInt("departmentId"));
+					if (Objects.isNull(dep)) {
+						dep = mapDepartment(rs);
+						map.put(rs.getInt("departmentId"), dep);
+					}
+					Seller seller = mapSeller(rs, dep);
+					sellers.add(seller);
 				}
-				Seller seller = mapSeller(rs, dep);
-				sellers.add(seller);
 			}
 		}
 		catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}
-		finally {
-			DB.closeResultSet(rs);
 		}
 		return sellers;
 	}
