@@ -37,5 +37,8 @@ public class Program {
 			sellerDao.update(s);
 			System.out.println(s);
 		}, () -> System.out.println("There is no seller with an informed id"));
+		
+		System.out.println("\n### TEST 6: seller delete ###");
+		sellerDao.deleteById(15);
 	}
 }
